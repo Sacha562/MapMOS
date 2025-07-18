@@ -53,16 +53,19 @@ class SemanticKITTIDataset(KITTIOdometryDataset):
 
     def __getitem__(self, idx):
         scan_contents = self.scans(idx)
-        print(scan_contents)
-        print(scan_contents[0], scan_contents[1], scan_contents[2])
+        timestamps = np.array([])
+        try:
+            points, timestamps = scan_contents
+        except:
+            points = scan_contents
 
-        points, timestamps = self.scans(idx)
         labels = (
             self.read_labels(self.label_files[idx])
             if self.label_files
             else np.full((len(points), 1), -1, dtype=np.int32)
         )
         return points, timestamps, labels
+
 
     def read_labels(self, filename):
         """Load moving object labels from .label file"""
